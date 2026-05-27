@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RUST ZERO → ORBIT — Your Personal Mastery Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rust: #E8441A;
+  --rust-glow: rgba(232,68,26,0.18);
+  --rust-dim: #7a2511;
+  --bg: #0c0b09;
+  --surface: #141210;
+  --panel: #1a1815;
+  --border: #2a2520;
+  --border-hot: #3d3028;
+  --text: #f0ebe4;
+  --muted: #7a7065;
+  --accent-gold: #d4a843;
+  --accent-blue: #4a9eff;
+  --accent-green: #4ecb71;
+  --accent-purple: #a78bfa;
+  --gutter: 48px;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  overflow-x: hidden;
+  line-height: 1.7;
+}
+
+/* ─── SCROLLBAR ─────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--rust-dim); border-radius: 2px; }
+
+/* ─── GRAIN OVERLAY ─────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px;
+}
+
+/* ─── HERO ──────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-left {
+  padding: 80px var(--gutter);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-bg-shape {
+  position: absolute;
+  right: -80px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,68,26,0.15) 0%, transparent 70%);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: translateY(-50%) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-50%) scale(1.08); opacity: 1; }
+}
+
+.crab-ascii {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--rust);
+  opacity: 0.6;
+  white-space: pre;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.hero-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hero-tag::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--rust);
+}
+
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(52px, 7vw, 96px);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -2px;
+  margin-bottom: 28px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--rust);
+  display: block;
+}
+
+.hero-desc {
+  font-size: 16px;
+  color: var(--muted);
+  max-width: 480px;
+  margin-bottom: 36px;
+  line-height: 1.8;
+}
+.hero-desc strong { color: var(--text); }
+
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 6px 14px;
+  border-radius: 2px;
+  border: 1px solid;
+}
+.pill-rust { color: var(--rust); border-color: rgba(232,68,26,0.35); background: rgba(232,68,26,0.06); }
+.pill-gold { color: var(--accent-gold); border-color: rgba(212,168,67,0.3); background: rgba(212,168,67,0.05); }
+.pill-blue { color: var(--accent-blue); border-color: rgba(74,158,255,0.3); background: rgba(74,158,255,0.05); }
+.pill-green { color: var(--accent-green); border-color: rgba(78,203,113,0.3); background: rgba(78,203,113,0.05); }
+
+/* ─── DIVIDER ────────────────────────── */
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+  margin: 0 var(--gutter);
+}
+
+/* ─── SECTION WRAPPER ────────────────── */
+.section {
+  padding: 80px var(--gutter);
+  max-width: 1140px;
+  margin: 0 auto;
+}
+.section-wide {
+  padding: 80px 0;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.section-eye {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rust);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.section-eye span { opacity: 0.4; font-size: 14px; }
+
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 12px;
+}
+.section-title em { font-style: italic; color: var(--rust); }
+
+.section-sub {
+  color: var(--muted);
+  font-size: 15px;
+  max-width: 640px;
+  margin-bottom: 52px;
+  line-height: 1.8;
+}
+
+/* ─── WARNING BOX ────────────────────── */
+.callout {
+  border: 1px solid var(--border-hot);
+  border-left: 3px solid var(--rust);
+  background: rgba(232,68,26,0.04);
+  padding: 24px 28px;
+  margin-bottom: 52px;
+  border-radius: 0 4px 4px 0;
+}
+.callout-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--rust);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.callout p { font-size: 14px; color: var(--muted); line-height: 1.8; }
+.callout p strong { color: var(--text); }
+
+/* ─── PHASE CARDS ────────────────────── */
+.phases {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--border);
+}
+
+.phase-card {
+  padding: 36px 28px;
+  border-right: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s;
+}
+.phase-card:last-child { border-right: none; }
+.phase-card:hover { background: var(--panel); }
+
+.phase-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.phase-card:hover::after { opacity: 1; }
+.p1::after { background: var(--rust); }
+.p2::after { background: var(--accent-gold); }
+.p3::after { background: var(--accent-blue); }
+.p4::after { background: var(--accent-purple); }
+
+.phase-num {
+  font-family: 'Fraunces', serif;
+  font-size: 80px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 16px;
+  opacity: 0.07;
+}
+
+.phase-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.p1 .phase-label { color: var(--rust); }
+.p2 .phase-label { color: var(--accent-gold); }
+.p3 .phase-label { color: var(--accent-blue); }
+.p4 .phase-label { color: var(--accent-purple); }
+
+.phase-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.phase-weeks {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.phase-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.phase-items li {
+  font-size: 13px;
+  color: var(--muted);
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.5;
+}
+.phase-items li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  font-size: 16px;
+  line-height: 1;
+  top: 1px;
+}
+.p1 .phase-items li::before { color: var(--rust); }
+.p2 .phase-items li::before { color: var(--accent-gold); }
+.p3 .phase-items li::before { color: var(--accent-blue); }
+.p4 .phase-items li::before { color: var(--accent-purple); }
+.phase-items li strong { color: var(--text); }
+
+/* ─── RESOURCE LIST ──────────────────── */
+.resource-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.resource-item {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: start;
+  gap: 20px;
+  padding: 22px 24px;
+  background: var(--surface);
+  border: 1px solid transparent;
+  transition: border-color 0.2s, background 0.2s;
+  text-decoration: none;
+  color: inherit;
+  cursor: default;
+}
+.resource-item:hover {
+  background: var(--panel);
+  border-color: var(--border);
+}
+.resource-item a { color: var(--accent-blue); text-decoration: underline; font-size: 13px; }
+
+.res-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--rust);
+  margin-top: 3px;
+  letter-spacing: 1px;
+}
+.res-name {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+.res-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.res-desc strong { color: var(--text); }
+.res-when {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 2px;
+  border: 1px solid;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+.when-start { color: var(--rust); border-color: rgba(232,68,26,0.3); background: rgba(232,68,26,0.05); }
+.when-mid { color: var(--accent-gold); border-color: rgba(212,168,67,0.3); background: rgba(212,168,67,0.05); }
+.when-later { color: var(--accent-blue); border-color: rgba(74,158,255,0.3); background: rgba(74,158,255,0.05); }
+.when-deep { color: var(--accent-purple); border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.05); }
+.when-free { color: var(--accent-green); border-color: rgba(78,203,113,0.3); background: rgba(78,203,113,0.05); }
+
+/* ─── VIDEO GRID ─────────────────────── */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.video-card {
+  background: var(--surface);
+  padding: 28px 24px;
+  transition: background 0.2s;
+}
+.video-card:hover { background: var(--panel); }
+
+.video-rank {
+  font-family: 'Fraunces', serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--border-hot);
+  margin-bottom: 12px;
+}
+.video-tier {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.tier-god { color: var(--rust); }
+.tier-great { color: var(--accent-gold); }
+.tier-good { color: var(--accent-blue); }
+
+.video-name { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.video-by { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+.video-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.video-desc strong { color: var(--text); }
+.video-link {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--rust);
+  text-decoration: none;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(232,68,26,0.3);
+  padding-bottom: 1px;
+  transition: border-color 0.15s;
+}
+.video-link:hover { border-color: var(--rust); }
+
+/* ─── TIMELINE ───────────────────────── */
+.timeline {
+  position: relative;
+  padding-left: 52px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 8px;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--rust), var(--border-hot), var(--border));
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 48px;
+}
+.timeline-item:last-child { margin-bottom: 0; }
+
+.timeline-dot {
+  position: absolute;
+  left: -42px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--rust);
+  box-shadow: 0 0 0 4px var(--bg), 0 0 16px rgba(232,68,26,0.4);
+}
+.timeline-item.done .timeline-dot { background: var(--accent-green); box-shadow: 0 0 0 4px var(--bg), 0 0 16px rgba(78,203,113,0.3); }
+.timeline-item.future .timeline-dot { background: var(--border-hot); box-shadow: 0 0 0 4px var(--bg); }
+
+.timeline-week {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 6px;
+}
+.timeline-item.future .timeline-week { color: var(--muted); }
+
+.timeline-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.timeline-body {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.timeline-body strong { color: var(--text); }
+
+.timeline-tasks {
+  list-style: none;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.timeline-tasks li {
+  font-size: 13px;
+  color: var(--muted);
+  padding-left: 16px;
+  position: relative;
+}
+.timeline-tasks li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--rust);
+}
+.timeline-tasks li strong { color: var(--text); }
+
+.timeline-badge {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  margin-left: 8px;
+  vertical-align: middle;
+  color: var(--accent-green);
+  border: 1px solid rgba(78,203,113,0.3);
+  background: rgba(78,203,113,0.05);
+}
+
+/* ─── PEOPLE GRID ────────────────────── */
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.person-card {
+  background: var(--surface);
+  padding: 28px 24px;
+  transition: background 0.2s;
+}
+.person-card:hover { background: var(--panel); }
+
+.person-handle {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--rust);
+  margin-bottom: 6px;
+}
+.person-name {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.person-role {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+.person-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.person-desc strong { color: var(--text); }
+.person-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.person-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 4px 10px;
+  color: var(--rust);
+  border: 1px solid rgba(232,68,26,0.3);
+  background: rgba(232,68,26,0.04);
+  text-decoration: none;
+  border-radius: 2px;
+  transition: background 0.15s;
+}
+.person-link:hover { background: rgba(232,68,26,0.12); }
+
+/* ─── EMBEDDED ───────────────────────── */
+.embedded-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.embedded-item {
+  background: var(--surface);
+  padding: 28px 24px;
+  transition: background 0.2s;
+}
+.embedded-item:hover { background: var(--panel); }
+
+.emb-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+.emb-name {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.emb-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.emb-desc strong { color: var(--text); }
+
+/* ─── CRATES ─────────────────────────── */
+.crates-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.crate {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text);
+  transition: border-color 0.15s, color 0.15s;
+  cursor: default;
+}
+.crate:hover { border-color: var(--rust-dim); color: var(--rust); }
+
+/* ─── TIPS ───────────────────────────── */
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.tip-card {
+  background: var(--surface);
+  padding: 28px 24px;
+  border-left: 3px solid;
+  transition: background 0.2s;
+}
+.tip-card:hover { background: var(--panel); }
+.tip-card.t1 { border-color: var(--rust); }
+.tip-card.t2 { border-color: var(--accent-gold); }
+.tip-card.t3 { border-color: var(--accent-blue); }
+.tip-card.t4 { border-color: var(--accent-green); }
+.tip-card.t5 { border-color: var(--accent-purple); }
+.tip-card.t6 { border-color: #f472b6; }
+
+.tip-head {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.tip-card.t1 .tip-head { color: var(--rust); }
+.tip-card.t2 .tip-head { color: var(--accent-gold); }
+.tip-card.t3 .tip-head { color: var(--accent-blue); }
+.tip-card.t4 .tip-head { color: var(--accent-green); }
+.tip-card.t5 .tip-head { color: var(--accent-purple); }
+.tip-card.t6 .tip-head { color: #f472b6; }
+
+.tip-body { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.tip-body strong { color: var(--text); }
+
+/* ─── COMMUNITY ──────────────────────── */
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.comm-card {
+  background: var(--surface);
+  padding: 24px 20px;
+  transition: background 0.2s;
+}
+.comm-card:hover { background: var(--panel); }
+.comm-icon { font-size: 22px; margin-bottom: 10px; }
+.comm-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.comm-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.comm-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--accent-blue);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.comm-link:hover { border-color: var(--accent-blue); }
+
+/* ─── TOOLS ──────────────────────────── */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.tool-card {
+  background: var(--surface);
+  padding: 24px 20px;
+  transition: background 0.2s;
+}
+.tool-card:hover { background: var(--panel); }
+.tool-icon { font-size: 20px; margin-bottom: 10px; }
+.tool-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--accent-green);
+}
+.tool-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.tool-desc strong { color: var(--text); }
+
+/* ─── PROJECTS ───────────────────────── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.project-card {
+  background: var(--surface);
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s;
+}
+.project-card:hover { background: var(--panel); }
+.project-num {
+  font-family: 'Fraunces', serif;
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--border-hot);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.project-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.project-level {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.proj-beg { color: var(--rust); }
+.proj-int { color: var(--accent-gold); }
+.proj-adv { color: var(--accent-blue); }
+.proj-pro { color: var(--accent-purple); }
+.project-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.project-desc strong { color: var(--text); }
+
+/* ─── METRICS ────────────────────────── */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--border);
+}
+.metric-card {
+  padding: 32px 28px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.metric-card:last-child { border-right: none; }
+.metric-num {
+  font-family: 'Fraunces', serif;
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.metric-num.rust { color: var(--rust); }
+.metric-num.gold { color: var(--accent-gold); }
+.metric-num.blue { color: var(--accent-blue); }
+.metric-num.green { color: var(--accent-green); }
+.metric-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* ─── FOOTER ─────────────────────────── */
+footer {
+  padding: 64px var(--gutter);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.footer-crab {
+  font-size: 56px;
+  display: block;
+  margin-bottom: 16px;
+  animation: float 6s ease-in-out infinite;
+}
+.footer-tagline {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-style: italic;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.footer-seq {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+.footer-seq span { color: var(--rust); }
+
+/* ─── NAV ────────────────────────────── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(12,11,9,0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 52px;
+}
+.nav-logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--rust);
+  letter-spacing: 1px;
+  margin-right: 32px;
+  white-space: nowrap;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+}
+.nav-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0 16px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--border);
+  transition: color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+.nav-link:first-child { border-left: 1px solid var(--border); }
+.nav-link:hover { color: var(--text); background: var(--surface); }
+
+/* ─── RESPONSIVE ─────────────────────── */
+@media (max-width: 900px) {
+  :root { --gutter: 24px; }
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .phases { grid-template-columns: 1fr 1fr; }
+  .projects-grid { grid-template-columns: 1fr 1fr; }
+  .metrics-row { grid-template-columns: 1fr 1fr; }
+  .embedded-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .phases { grid-template-columns: 1fr; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .metrics-row { grid-template-columns: 1fr 1fr; }
+  .resource-item { grid-template-columns: 40px 1fr; }
+  .res-when { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">🦀 RUST ZERO→ORBIT</div>
+  <div class="nav-links">
+    <a class="nav-link" href="#phases">Phases</a>
+    <a class="nav-link" href="#timeline">Timeline</a>
+    <a class="nav-link" href="#books">Books</a>
+    <a class="nav-link" href="#videos">Videos</a>
+    <a class="nav-link" href="#people">Legends</a>
+    <a class="nav-link" href="#embedded">Embedded</a>
+    <a class="nav-link" href="#projects">Projects</a>
+    <a class="nav-link" href="#tools">Tools</a>
+    <a class="nav-link" href="#community">Community</a>
+    <a class="nav-link" href="#tips">Tips</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Your Personal Rust Mastery Bible</div>
+    <h1>
+      Zero to<br>
+      <em>Orbit</em>
+      in Rust
+    </h1>
+    <p class="hero-desc">
+      You're an <strong>electronics + neuromorphic computing engineer</strong>. You already understand memory, registers, hardware timing. Rust was <strong>made for you</strong> — you'll get it faster than most. This guide is your exact path from day one syntax to shipping bare-metal neuromorphic firmware.
+    </p>
+    <div class="hero-pills">
+      <span class="pill pill-rust">Systems Programming</span>
+      <span class="pill pill-blue">Embedded / no_std</span>
+      <span class="pill pill-gold">Neuromorphic Compute</span>
+      <span class="pill pill-green">Intern-Ready in 6 Months</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-bg-shape"></div>
+    <pre class="crab-ascii">
+    ██████╗ ██╗   ██╗███████╗████████╗
+    ██╔══██╗██║   ██║██╔════╝╚══██╔══╝
+    ██████╔╝██║   ██║███████╗   ██║   
+    ██╔══██╗██║   ██║╚════██║   ██║   
+    ██║  ██║╚██████╔╝███████║   ██║   
+    ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   
+
+        /\_/\    🦀 🦀 🦀
+       ( o.o )   memory safe
+        > ^ <    zero cost
+       /|   |\   no GC
+    </pre>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- METRICS -->
+<div style="max-width:1140px; margin:0 auto; padding:0 0;">
+  <div class="metrics-row">
+    <div class="metric-card">
+      <div class="metric-num rust">4–6</div>
+      <div class="metric-label">Months to Intern Ready</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num gold">10–15</div>
+      <div class="metric-label">Hours / Week Required</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num blue">4</div>
+      <div class="metric-label">Learning Phases</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num green">6+</div>
+      <div class="metric-label">Ship-Ready Projects</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASES -->
+<section class="section" id="phases">
+  <div class="section-eye"><span>◆</span> The Four Phases</div>
+  <h2 class="section-title">Your Path to <em>Orbit</em></h2>
+  <p class="section-sub">Don't skip phases. Every Rust master went through the borrow checker pain before they could bend it. You will too. No shortcuts — but it pays off faster for electronics engineers.</p>
+
+  <div class="callout">
+    <div class="callout-title">⚡ Your Unfair Advantage</div>
+    <p>You already know what dangling pointers, data races, and use-after-free look like from C/C++. You know how hardware memory works. <strong>Rust prevents all of these at compile time.</strong> You'll appreciate the safety guarantees more than anyone coming from Python or JS. The borrow checker isn't your enemy — it's the discipline you already have, enforced by a compiler.</p>
+  </div>
+
+  <div class="phases">
+    <div class="phase-card p1">
+      <div class="phase-num">01</div>
+      <div class="phase-label">Phase One</div>
+      <div class="phase-title">Ground Zero</div>
+      <div class="phase-weeks">Weeks 1 – 4 · Syntax & Ownership</div>
+      <ul class="phase-items">
+        <li><strong>Start here.</strong> Don't rush past ownership/borrowing.</li>
+        <li>Install Rust via <code>rustup</code>. One command.</li>
+        <li>Watch Let's Get Rusty YouTube series first (taste it)</li>
+        <li>Then read The Rust Book Ch. 1–6 carefully</li>
+        <li>Do every Rustlings exercise. All of them.</li>
+        <li>Build a CLI calculator. Nothing fancy yet.</li>
+        <li>Read every compiler error in full. They're genius.</li>
+      </ul>
+    </div>
+    <div class="phase-card p2">
+      <div class="phase-num">02</div>
+      <div class="phase-label">Phase Two</div>
+      <div class="phase-title">Low Orbit</div>
+      <div class="phase-weeks">Weeks 5 – 10 · Traits, Generics, Async</div>
+      <ul class="phase-items">
+        <li>Finish The Book — all of it</li>
+        <li>Traits and generics, go deep here</li>
+        <li>Lifetimes — don't rush, revisit 3 times</li>
+        <li>Error handling with <code>anyhow</code>/<code>thiserror</code></li>
+        <li>Iterators and closures mastery</li>
+        <li>Intro to async/await — read the Async Book</li>
+        <li>Watch Jon Gjengset's Crust of Rust series</li>
+        <li>Build a real CLI tool you actually care about</li>
+      </ul>
+    </div>
+    <div class="phase-card p3">
+      <div class="phase-num">03</div>
+      <div class="phase-label">Phase Three</div>
+      <div class="phase-title">Escape Velocity</div>
+      <div class="phase-weeks">Weeks 11 – 20 · Embedded + no_std + Hardware</div>
+      <ul class="phase-items">
+        <li><code>no_std</code> fundamentals — your territory</li>
+        <li><code>embedded-hal</code> 1.0 (stable since Jan 2024)</li>
+        <li>Embassy async runtime for bare metal</li>
+        <li>HAL drivers: SPI, I2C, UART, GPIO</li>
+        <li>Interrupt handling + RTIC patterns</li>
+        <li>DMA + memory-safe buffer management</li>
+        <li>Ship: blink LED → read sensor → real driver</li>
+      </ul>
+    </div>
+    <div class="phase-card p4">
+      <div class="phase-num">04</div>
+      <div class="phase-label">Phase Four</div>
+      <div class="phase-title">Deep Space</div>
+      <div class="phase-weeks">Weeks 21+ · Unsafe, Perf, Neuromorphic</div>
+      <ul class="phase-items">
+        <li>Unsafe Rust + FFI to C drivers (read Rustonomicon)</li>
+        <li>Custom allocators for constrained memory</li>
+        <li>RISC-V bare metal targets</li>
+        <li>wgpu GPU compute — parallel LIF simulation</li>
+        <li>Rust Atomics and Locks (Mara Bos) — mandatory</li>
+        <li>Spade HDL for hardware co-design</li>
+        <li>Contribute to an open source crate</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TIMELINE -->
+<section class="section" id="timeline">
+  <div class="section-eye"><span>◆</span> Week-by-Week</div>
+  <h2 class="section-title">Your 90-Day <em>Launch Sequence</em></h2>
+  <p class="section-sub">No wishy-washy "go at your own pace" garbage. This is concrete. Week by week. Ship something by day 90.</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-week">Week 1 — Day 1</div>
+      <div class="timeline-title">Install <code>rustup</code>. Watch. Feel it.</div>
+      <div class="timeline-body">
+        <strong>Don't open a book yet.</strong> Start with YouTube — Let's Get Rusty channel. Watch his "Rust Crash Course" playlist first. Get the vibe. Then install <code>rustup</code> and run <code>rustc --version</code>. Open VS Code with rust-analyzer. Write Hello World. Compile it. Feel the difference.
+        <ul class="timeline-tasks">
+          <li>Install: <code>curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh</code></li>
+          <li>VS Code + <strong>rust-analyzer extension</strong> — non-negotiable IDE setup</li>
+          <li>Watch Let's Get Rusty — ownership video series (free YouTube)</li>
+          <li>Write your first struct, enum, match statement</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-week">Weeks 1–2</div>
+      <div class="timeline-title">The Rust Book Ch. 1–6 + Rustlings begins</div>
+      <div class="timeline-body">
+        This is where real ownership understanding happens. <strong>Read Chapter 4 (ownership) multiple times. Draw diagrams.</strong> Do Rustlings exercises alongside each chapter. Don't skip exercises. Don't look at solutions for 20+ minutes of struggle first — that's where the learning is.
+        <ul class="timeline-tasks">
+          <li><a href="https://doc.rust-lang.org/book/" target="_blank" style="color:var(--accent-blue)">doc.rust-lang.org/book</a> — your bible, free</li>
+          <li>Interactive Brown University version: <a href="https://rust-book.cs.brown.edu" target="_blank" style="color:var(--accent-blue)">rust-book.cs.brown.edu</a> (has quizzes)</li>
+          <li>Install Rustlings: <code>cargo install rustlings</code></li>
+          <li>Run <code>rustlings watch</code> — it guides you exercise by exercise</li>
+          <li>Build: simple number guessing game from book project</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-week">Weeks 3–4</div>
+      <div class="timeline-title">Finish The Book. Write a real CLI.</div>
+      <div class="timeline-body">
+        Chapters 7–20. Traits, enums, error handling, iterators, closures. <strong>Build the minigrep project from Chapter 12 — then modify it.</strong> Then build a CLI tool you actually care about as an engineer. Signal parsing? Sensor data decoder? Anything real.
+        <ul class="timeline-tasks">
+          <li>Complete the <code>minigrep</code> project — add features to it</li>
+          <li>Build your own CLI: something from your neuromorphic domain</li>
+          <li>Learn <code>cargo</code> deeply — test, doc, clippy, fmt</li>
+          <li>Start watching <strong>Jon Gjengset (Crust of Rust)</strong> on YouTube now</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-week">Weeks 5–6</div>
+      <div class="timeline-title">Programming Rust (O'Reilly) + Compiler Explorer</div>
+      <div class="timeline-body">
+        Go deeper on the type system. This book fills in everything The Book hand-waved. <strong>Spend 2 sessions on godbolt.org</strong> seeing your Rust compile to ARM assembly — set target to <code>thumbv7em-none-eabi</code> to see Cortex-M output. Zero-cost abstractions become real.
+        <ul class="timeline-tasks">
+          <li><strong>Programming Rust</strong> by Blandy, Orendorff, Tindall — read now</li>
+          <li>godbolt.org — paste Rust, see the ARM assembly it generates</li>
+          <li>Understand PhantomData, variance, deref coercions</li>
+          <li>Do exercises on <a href="https://exercism.org/tracks/rust" target="_blank" style="color:var(--accent-blue)">exercism.org/tracks/rust</a></li>
+          <li>Read other people's solutions — absorb idioms</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-week">Weeks 7–8</div>
+      <div class="timeline-title">Order hardware. Start The Embedded Rust Book.</div>
+      <div class="timeline-body">
+        <strong>Order a devboard NOW if you haven't.</strong> RP2040 (Raspberry Pi Pico) is cheap and has excellent Rust support. STM32 Nucleo also works. The Discovery Book uses the micro:bit. While it ships: read the Embedded Rust Book. Understand no_std, linker scripts, startup code.
+        <ul class="timeline-tasks">
+          <li><strong>The Embedded Rust Book</strong>: <a href="https://docs.rust-embedded.org/book/" target="_blank" style="color:var(--accent-blue)">docs.rust-embedded.org/book</a></li>
+          <li>Buy: <strong>RP2040 (Pico)</strong> — ~$4, best Rust support right now</li>
+          <li>Install: <code>rustup target add thumbv6m-none-eabi</code></li>
+          <li>Install: <code>cargo install probe-rs --features cli</code></li>
+          <li>Read: how SVD files generate PAC register access crates</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-week">Weeks 9–11</div>
+      <div class="timeline-title">Blink the LED. It will take longer than you think.</div>
+      <div class="timeline-body">
+        <strong>That's the point.</strong> You're learning the full toolchain end-to-end: cross-compile → flash → debug. Use probe-rs to flash. Use defmt + RTT for logging. Your electronics background pays off here — you understand what the HAL is actually abstracting underneath.
+        <ul class="timeline-tasks">
+          <li>Blink LED in bare Rust — no HAL first, then with HAL</li>
+          <li><strong>Embassy framework</strong> — embassy.dev — async tasks on bare metal</li>
+          <li>Read I2C sensor via Embassy — <code>device.read(0x53, &mut buf).await</code></li>
+          <li>Write to a DAC via SPI — use the embedded-hal SPI traits</li>
+          <li>Watch: James Munns / Ferrous Systems embedded Rust talks on YouTube</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-week">Weeks 12–14</div>
+      <div class="timeline-title">Rust for Rustaceans — the book that makes you dangerous.</div>
+      <div class="timeline-body">
+        By Jon Gjengset. Assumes you know the basics — then breaks your brain open. <strong>Read slowly. Take notes. You'll revisit it 10 times over your career.</strong> PhantomData, variance, Pin, unwind safety, unsafe API design. This is what separates engineers who "know Rust" from engineers who understand it.
+        <ul class="timeline-tasks">
+          <li><strong>Rust for Rustaceans</strong> — No Starch Press (get the physical copy)</li>
+          <li>Watch every Crust of Rust episode by Jon Gjengset alongside this</li>
+          <li>Study: how Embassy uses proc macros internally (<code>cargo expand</code>)</li>
+          <li>Understand RTIC — priority ceiling protocol, no deadlocks at compile time</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item future">
+      <div class="timeline-dot"></div>
+      <div class="timeline-week">Weeks 15–20</div>
+      <div class="timeline-title">DMA, Interrupts, Memory-Safe Hardware Control</div>
+      <div class="timeline-body">
+        The deep embedded work. <strong>Memory-safe DMA is where Rust's ownership model really shines</strong> — no more buffer corruption while DMA is active. This maps perfectly to neuromorphic event camera streaming. Build the driver design pattern: Promote → Configure → Use.
+        <ul class="timeline-tasks">
+          <li>Implement a memory-safe SPI DMA transfer using Embassy</li>
+          <li>Read: Rust Atomics and Locks (Mara Bos) — free at marabos.nl/atomics</li>
+          <li>Build: RTIC-based interrupt-driven sensor data logger</li>
+          <li>Understand: <code>Pin&lt;B&gt;</code>, <code>StableDeref</code>, <code>StaticCell</code> allocations</li>
+          <li>Connect a DVS / event camera if you have access — parse raw stream</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item future">
+      <div class="timeline-dot"></div>
+      <div class="timeline-week">Weeks 20 – 26</div>
+      <div class="timeline-title">Ship a Neuromorphic Project. Contribute. Get Seen.</div>
+      <div class="timeline-body">
+        This is the capstone. <strong>Build something real that combines everything.</strong> A spike train processor. A LIF neuron simulator accelerated via wgpu. A HAL driver for a custom sensor chip. Publish it. Open source it. Write a blog post. This is what gets you the intern. Employers look at GitHub.
+        <ul class="timeline-tasks">
+          <li>Pick one: custom firmware HAL, spike data pipeline, wgpu LIF simulator</li>
+          <li>Publish to crates.io — learn <code>cargo publish</code></li>
+          <li>Contribute a PR to <code>awesome-embedded-rust</code> or Embassy</li>
+          <li>Write a README that explains the project clearly</li>
+          <li>Post about it: r/rust, r/embedded, users.rust-lang.org</li>
+          <li>Apply for internships — show GitHub, show the projects, show the PRs</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- BOOKS -->
+<section class="section" id="books">
+  <div class="section-eye"><span>◆</span> Canon Texts</div>
+  <h2 class="section-title">The Books — <em>Ordered by When</em></h2>
+  <p class="section-sub">In exact order you should read them. The sequencing matters. Don't jump to advanced books before the foundations are solid — it wastes time.</p>
+
+  <div class="resource-list">
+    <div class="resource-item">
+      <div class="res-num">01</div>
+      <div>
+        <div class="res-name">The Rust Programming Language ("The Book")</div>
+        <div class="res-desc">Steve Klabnik & Carol Nichols. <strong>Your absolute starting point. Non-negotiable.</strong> Free online at doc.rust-lang.org/book. Read the Brown University interactive version at rust-book.cs.brown.edu for quizzes. Do both projects: guessing game and minigrep. Read Chapter 4 (ownership) multiple times. Read it twice total — you'll get 40% more on the second pass.</div>
+      </div>
+      <span class="res-when when-start">START HERE</span>
+    </div>
+    <div class="resource-item">
+      <div class="res-num">02</div>
+      <div>
+        <div class="res-name">Rustlings — github.com/rust-lang/rustlings</div>
+        <div class="res-desc"><strong>Run alongside The Book from day one.</strong> Small exercises that teach syntax by failing. <code>cargo install rustlings</code>, then <code>rustlings watch</code>. Don't look at solutions for at least 20 minutes of real struggle first. The frustration is the learning. All 100+ exercises.</div>
+      </div>
+      <span class="res-when when-start">WITH BOOK</span>
+    </div>
+    <div class="resource-item">
+      <div class="res-num">03</div>
+      <div>
+        <div class="res-name">Rust by Example — doc.rust-lang.org/rust-by-example</div>
+        <div class="res-desc">Annotated, runnable code examples covering every feature. <strong>Use as a companion reference whenever The Book gets abstract.</strong> Free. You can run every snippet in the browser. When ownership finally clicks, come back here and read the ownership section — it'll feel obvious.</div>
+      </div>
+      <span class="res-when when-start">ALONGSIDE</span>
+    </div>
+    <div class="resource-item">
+      <div class="res-num">04</div>
+      <div>
+        <div class="res-name">Programming Rust — Blandy, Orendorff, Tindall (O'Reilly)</div>
+        <div class="res-desc">The hardcore alternative to The Book. <strong>Way more rigorous on the memory model, type system, and ownership semantics.</strong> Read after finishing The Book. This is where you stop hand-waving. Chapter on closures alone is worth the price. 2nd edition 2021.</div>
+      </div>
+      <span class="res-when when-mid">WEEKS 5–6</span>
+    </div>
+    <div class="resource-item">
+      <div class="res-num">05</div>
+      <div>
+        <div class="res-name">Rust for Rustaceans — Jon Gjengset (No Starch Press)</div>
+        <div class="res-desc">Written by Twitch's Rust streaming legend. <strong>Assumes you know the basics, then breaks your brain open.</strong> PhantomData, variance, Pin, unsafe, API design. This is "phase two" bible. Read slowly — one chapter per sitting. You'll reference it for years.</div>
+      </div>
+      <span class="res-when when-mid">WEEKS 12–14</span>
+    </div>
+    <div class="resource-item">
+      <div class="res-num">06</div>
+      <div>
+        <div class="res-name">Rust in Action — Tim McNamara (Manning)</div>
+        <div class="res-desc">Systems programming projects: filesystems, networking, device interfaces. <strong>Invaluable for electronics engineers</strong> coming from embedded C because it bridges theory and "stuff that runs on real hardware." CPU emulator, DNS, shell. Makes the abstract concrete.</div>
+      </div>
+      <span class="res-when when-mid">WEEKS 7–10</span>
+    </div>
+    <div class="resource-item">
+      <div class="res-num">07</div>
+      <div>
+        <div class="res-name">Rust Atomics and Locks — Mara Bos (O'Reilly)</div>
+        <div class="res-desc"><strong>The most mind-expanding Rust text in existence.</strong> Deep dives on atomics, memory ordering, synchronization primitives. Free at marabos.nl/atomics. Essential for understanding memory-mapped hardware registers and concurrent firmware. Pairs perfectly with your electronics background.</div>
+      </div>
+      <span class="res-when when-later">WEEKS 15–18</span>
+    </div>
+    <div class="resource-item">
+      <div class="res-num">08</div>
+      <div>
+        <div class="res-name">The Embedded Rust Book — docs.rust-embedded.org/book</div>
+        <div class="res-desc">Official guide to embedded Rust. Covers no_std, linker scripts, startup code, MMIO, interrupts on ARM Cortex-M. <strong>This is your embedded Rust bible.</strong> Free. Read it cover-to-cover when your devboard arrives. The Discovery Book companion teaches via hands-on hardware exercises.</div>
+      </div>
+      <span class="res-when when-mid">WEEKS 7–8</span>
+    </div>
+    <div class="resource-item">
+      <div class="res-num">09</div>
+      <div>
+        <div class="res-name">The Rustonomicon — doc.rust-lang.org/nomicon</div>
+        <div class="res-desc">Official guide to unsafe Rust. Memory layouts, drop order, aliasing rules, FFI. <strong>Terrifying and necessary.</strong> When you need to write unsafe hardware register manipulations (and you will, for neuromorphic drivers), this is law. By Aria Beingessner (Gankra).</div>
+      </div>
+      <span class="res-when when-deep">DEEP PHASE</span>
+    </div>
+    <div class="resource-item">
+      <div class="res-num">10</div>
+      <div>
+        <div class="res-name">Effective Rust — David Drysdale — effectiverust.com</div>
+        <div class="res-desc">35 specific ways to improve your Rust code. Covers no_std compatibility, API design, using the type system defensively. <strong>Punch-card format: short, actionable, dense.</strong> Free online. Read this between phases to audit and sharpen your habits.</div>
+      </div>
+      <span class="res-when when-mid">BETWEEN PHASES</span>
+    </div>
+    <div class="resource-item">
+      <div class="res-num">11</div>
+      <div>
+        <div class="res-name">Learn Rust With Entirely Too Many Linked Lists</div>
+        <div class="res-desc">rust-unofficial.github.io/too-many-lists. By Gankra. Write 6 linked list implementations. <strong>By the end you understand unsafe Rust, Pin, and interior mutability cold.</strong> Sounds boring — it's actually the best tutorial on Rust's trickiest patterns. Free. Do it in weeks 8–10.</div>
+      </div>
+      <span class="res-when when-mid">WEEKS 8–10</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VIDEOS -->
+<section class="section" id="videos">
+  <div class="section-eye"><span>◆</span> Video Fuel</div>
+  <h2 class="section-title">Watch These <em>Humans</em></h2>
+  <p class="section-sub">Some are gods. Some are great explainers. Know the difference, use both. Ordered by when to watch them.</p>
+
+  <div class="video-grid">
+    <div class="video-card">
+      <div class="video-rank">01</div>
+      <div class="video-tier tier-good">START HERE · Weeks 1–4</div>
+      <div class="video-name">Let's Get Rusty</div>
+      <div class="video-by">YouTube — @LetsGetRusty</div>
+      <div class="video-desc"><strong>Your first video destination.</strong> Chapter-by-chapter walkthrough of The Book. Well-paced, clear ownership/borrowing explanations. Watch his Rust crash course playlist first before opening any book. This gives you the taste of what Rust coding feels like before the theory hits.</div>
+      <a class="video-link" href="https://youtube.com/@letsgetrusty" target="_blank">→ youtube.com/@letsgetrusty</a>
+    </div>
+
+    <div class="video-card">
+      <div class="video-rank">02</div>
+      <div class="video-tier tier-good">PARALLEL · Weeks 1–4</div>
+      <div class="video-name">No Boilerplate</div>
+      <div class="video-by">YouTube — @NoBoilerplate</div>
+      <div class="video-desc">Short, dense, opinionated essays on Rust. <strong>Evangelizes why Rust is different from every other language.</strong> Watch when you're feeling doubtful ("why am I fighting the borrow checker?"). His "Rust is not a programming language, it's a philosophy" video alone is worth 2 hours of motivation.</div>
+      <a class="video-link" href="https://youtube.com/@NoBoilerplate" target="_blank">→ youtube.com/@NoBoilerplate</a>
+    </div>
+
+    <div class="video-card">
+      <div class="video-rank">03</div>
+      <div class="video-tier tier-god">GOD TIER · Weeks 4+</div>
+      <div class="video-name">Jon Gjengset — Crust of Rust</div>
+      <div class="video-by">YouTube — @jonhoo · Author of Rust for Rustaceans</div>
+      <div class="video-desc"><strong>The deepest Rust educator alive.</strong> Long-form live stream deep dives: implementing channels, mutex internals, custom iterators, async. Intermediate to advanced. Watch every single episode. This man is the teacher you wished you had. Start after finishing The Book.</div>
+      <a class="video-link" href="https://youtube.com/@jonhoo" target="_blank">→ youtube.com/@jonhoo</a>
+    </div>
+
+    <div class="video-card">
+      <div class="video-rank">04</div>
+      <div class="video-tier tier-god">GOD TIER · Weeks 7+</div>
+      <div class="video-name">James Munns / Ferrous Systems — Embedded Rust</div>
+      <div class="video-by">YouTube — embedded-hal, RTIC, firmware</div>
+      <div class="video-desc"><strong>James Munns basically defines embedded Rust culture.</strong> Talks on embedded-hal, RTIC, driver development, real microcontroller sessions. Creator of postcard (embedded serialization). If you're going firmware, his talks are mandatory. Ferrous Systems is the gold standard for embedded Rust consulting.</div>
+      <a class="video-link" href="https://jamesmunns.com" target="_blank">→ jamesmunns.com</a>
+    </div>
+
+    <div class="video-card">
+      <div class="video-rank">05</div>
+      <div class="video-tier tier-great">GREAT · Weeks 3–8</div>
+      <div class="video-name">Tim McNamara — timClicks</div>
+      <div class="video-by">YouTube — Author of Rust in Action</div>
+      <div class="video-desc">Systems-level tasks, command-line interfaces, profiling. Live-coding format demonstrates idiomatic refactoring. <strong>Author of Rust in Action</strong>, so the content pairs perfectly with that book. Great for seeing how experienced engineers think about Rust problems, not just the solutions.</div>
+      <a class="video-link" href="https://youtube.com/@timClicks" target="_blank">→ youtube.com/@timClicks</a>
+    </div>
+
+    <div class="video-card">
+      <div class="video-rank">06</div>
+      <div class="video-tier tier-great">GREAT · Weeks 1–6</div>
+      <div class="video-name">Google's Comprehensive Rust (Free Course)</div>
+      <div class="video-by">google.github.io/comprehensive-rust</div>
+      <div class="video-desc">4-day course made by Googlers for internal Rust onboarding. Now public. <strong>Covers Android & bare-metal Rust sections.</strong> Structured, thorough, opinionated in the best way. Great as a structured supplement or fast-track if you prefer a course format over a book. Completely free.</div>
+      <a class="video-link" href="https://google.github.io/comprehensive-rust" target="_blank">→ google.github.io/comprehensive-rust</a>
+    </div>
+
+    <div class="video-card">
+      <div class="video-rank">07</div>
+      <div class="video-tier tier-great">GREAT · Ongoing</div>
+      <div class="video-name">RustConf Talks — YouTube</div>
+      <div class="video-by">Annual conference · 2022, 2023, 2024</div>
+      <div class="video-desc">Search YouTube for RustConf 2022, 2023, 2024. The async ecosystem, embedded Rust state-of-the-union, unsafe Rust guidelines. <strong>Conference talks get you the cutting edge faster than any book.</strong> Watch the embedded + systems tracks specifically for your domain.</div>
+      <a class="video-link" href="https://www.youtube.com/results?search_query=RustConf+2024" target="_blank">→ YouTube: RustConf</a>
+    </div>
+
+    <div class="video-card">
+      <div class="video-rank">08</div>
+      <div class="video-tier tier-good">SUPPLEMENT · Any time</div>
+      <div class="video-name">fasterthanli.me — Amos Wenger</div>
+      <div class="video-by">Blog + Videos — the most thorough Rust writing in existence</div>
+      <div class="video-desc">"Making our own executable packer", "Aiming for correctness with types" — each post is a 20,000 word masterclass. <strong>Read "A Half-Hour to Learn Rust" in week 1</strong> alongside The Book as a quick syntax orientation. Bookmark everything. Read when you hit ceilings.</div>
+      <a class="video-link" href="https://fasterthanli.me" target="_blank">→ fasterthanli.me</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- LEGENDS -->
+<section class="section" id="people">
+  <div class="section-eye"><span>◆</span> The Legends</div>
+  <h2 class="section-title">Humans Worth <em>Following</em></h2>
+  <p class="section-sub">Follow these people. Read their blogs. Watch their talks. Their GitHub PRs and RFCs will teach you things no book will.</p>
+
+  <div class="people-grid">
+    <div class="person-card">
+      <div class="person-handle">@jonhoo</div>
+      <div class="person-name">Jon Gjengset</div>
+      <div class="person-role">AWS Engineer · Author of Rust for Rustaceans · Twitch streamer</div>
+      <div class="person-desc">The deepest Rust educator alive. His Crust of Rust streams implement std library internals live. <strong>Follow on YouTube, buy his book, subscribe to his blog.</strong> His live-coding approach shows you how expert engineers think and debug in real time.</div>
+      <div class="person-links">
+        <a class="person-link" href="https://youtube.com/@jonhoo" target="_blank">YouTube</a>
+        <a class="person-link" href="https://thesquareplanet.com" target="_blank">Blog</a>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-handle">@dirbaio</div>
+      <div class="person-name">Dario Nieuwenhuis</div>
+      <div class="person-role">Creator of Embassy · Async Embedded Rust</div>
+      <div class="person-desc">Built Embassy — the async framework that changed embedded Rust forever. <strong>Follow his GitHub activity</strong> to see the cutting edge of async no_std runtime design. This person is literally building your firmware's future. Watch Embassy's GitHub issues/PRs for real engineering decisions.</div>
+      <div class="person-links">
+        <a class="person-link" href="https://embassy.dev" target="_blank">Embassy</a>
+        <a class="person-link" href="https://github.com/dirbaio" target="_blank">GitHub</a>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-handle">@m_ou_se</div>
+      <div class="person-name">Mara Bos</div>
+      <div class="person-role">Rust Library Team Lead · Author of Rust Atomics and Locks</div>
+      <div class="person-desc">Wrote the most important Rust book on concurrency. Works on the standard library. <strong>Follow to understand memory ordering and synchronization at the silicon level</strong> — directly applicable to your hardware register manipulation work.</div>
+      <div class="person-links">
+        <a class="person-link" href="https://marabos.nl/atomics" target="_blank">Free Book</a>
+        <a class="person-link" href="https://github.com/m-ou-se" target="_blank">GitHub</a>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-handle">@jasmunns</div>
+      <div class="person-name">James Munns</div>
+      <div class="person-role">Embedded Rust Culture · Ferrous Systems · OneVariable</div>
+      <div class="person-desc">Defines the embedded Rust space. Creator of postcard (embedded serialization), pelican allocator, countless firmware talks. <strong>Your embedded compass.</strong> Follow his blog and podcast for embedded Rust culture, war stories, and design philosophy.</div>
+      <div class="person-links">
+        <a class="person-link" href="https://jamesmunns.com" target="_blank">Blog</a>
+        <a class="person-link" href="https://github.com/jamesmunns" target="_blank">GitHub</a>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-handle">@nikomatsakis</div>
+      <div class="person-name">Niko Matsakis</div>
+      <div class="person-role">Co-designer of Rust's Type System · Language Lead</div>
+      <div class="person-desc">If you want to understand WHY the borrow checker works the way it does, read everything Niko has ever written. <strong>Blog: smallcultfollowing.com/babysteps</strong> — deep type theory meets practical system design. RFCs that shaped Rust come from him.</div>
+      <div class="person-links">
+        <a class="person-link" href="https://smallcultfollowing.com/babysteps/" target="_blank">Blog</a>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-handle">@Gankra_</div>
+      <div class="person-name">Aria Beingessner (Gankra)</div>
+      <div class="person-role">Unsafe Rust Oracle · Author of the Rustonomicon</div>
+      <div class="person-desc">Author of the Rustonomicon (the unsafe Rust bible) and "Learn Rust With Entirely Too Many Linked Lists." <strong>If you touch unsafe Rust for memory-mapped hardware, Gankra is your scripture.</strong> Follow her GitHub and blog for unsafe patterns done correctly.</div>
+      <div class="person-links">
+        <a class="person-link" href="https://doc.rust-lang.org/nomicon/" target="_blank">Rustonomicon</a>
+        <a class="person-link" href="https://rust-unofficial.github.io/too-many-lists/" target="_blank">Linked Lists</a>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-handle">@withoutboats</div>
+      <div class="person-name">withoutboats</div>
+      <div class="person-role">Async Rust Architect · Designed async/await</div>
+      <div class="person-desc">Designed async/await in Rust. If you want to understand Futures, Pin, and why async in Rust works the way it does — read their blog. <strong>Essential for Embassy async firmware understanding.</strong></div>
+      <div class="person-links">
+        <a class="person-link" href="https://without.boats" target="_blank">Blog</a>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="person-handle">@llogiq</div>
+      <div class="person-name">Georg Semmler</div>
+      <div class="person-role">Clippy Maintainer · Rust Performance</div>
+      <div class="person-desc">The brain behind many Clippy lints. <strong>Read his blog for performance-oriented Rust that matters for embedded and real-time.</strong> When you're trying to minimize flash usage on your neuromorphic edge device, this person's insights are gold.</div>
+      <div class="person-links">
+        <a class="person-link" href="https://llogiq.github.io" target="_blank">Blog</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EMBEDDED -->
+<section class="section" id="embedded">
+  <div class="section-eye"><span>◆</span> Your Turf</div>
+  <h2 class="section-title">Embedded + <em>Neuromorphic</em> Track</h2>
+  <p class="section-sub">This is where your electronics background becomes a superpower. You already understand what the HAL is abstracting. Ship on real hardware as early as possible.</p>
+
+  <div class="callout">
+    <div class="callout-title">⚡ The Embedded Driver Design Pattern — Memorize This</div>
+    <p><strong>Promote:</strong> Move raw PAC register block into a typed struct (consuming it). <strong>Configure:</strong> Set pins, clock rates, modes via builder pattern (consuming unconfigured struct). <strong>Use:</strong> Execute hardware-agnostic I/O via <code>embedded-hal</code> traits. Once promoted, raw register access cannot happen elsewhere. The compiler enforces this. <strong>This is Rust's ownership model solving a real hardware safety problem.</strong></p>
+  </div>
+
+  <div class="embedded-grid">
+    <div class="embedded-item">
+      <div class="emb-icon">🔧</div>
+      <div class="emb-name">Embassy — Async Embedded Framework</div>
+      <div class="emb-desc"><strong>The modern way to write embedded Rust.</strong> Async tasks on bare metal, no OS needed. Supports nRF, STM32, RP2040, ESP32. Tasks compile down to state machines. When all tasks are yielding, CPU goes to sleep — perfect for neuromorphic edge nodes. embassy.dev</div>
+    </div>
+    <div class="embedded-item">
+      <div class="emb-icon">⚡</div>
+      <div class="emb-name">RTIC — Real-Time Interrupt-Driven Concurrency</div>
+      <div class="emb-desc"><strong>For hard real-time systems.</strong> Priority-based task scheduling, lock-free resource sharing analyzed at compile time. Priority ceiling protocol mathematically eliminates deadlocks and priority inversions. Runs on a single shared call stack — minimal RAM. Essential for timing-critical spike processing. rtic.rs</div>
+    </div>
+    <div class="embedded-item">
+      <div class="emb-icon">📡</div>
+      <div class="emb-name">embedded-hal 1.0 Trait Ecosystem</div>
+      <div class="emb-desc">The standard hardware abstraction layer. <strong>Stable at 1.0 since January 2024.</strong> Learn this first — every peripheral driver is built on it. SPI, I2C, UART, GPIO, PWM, ADC all have trait definitions here. Hardware-agnostic drivers you write once, run on any chip. docs.rs/embedded-hal</div>
+    </div>
+    <div class="embedded-item">
+      <div class="emb-icon">🦀</div>
+      <div class="emb-name">probe-rs — Modern Debug Tool</div>
+      <div class="emb-desc">Replacement for OpenOCD/GDB written in Rust. <strong>Flash firmware, RTT logging (defmt), embedded debugging.</strong> Works with J-Link, CMSIS-DAP, ST-Link. Your day-to-day hardware interface. Install: <code>cargo install probe-rs --features cli</code>. probe.rs</div>
+    </div>
+    <div class="embedded-item">
+      <div class="emb-icon">📦</div>
+      <div class="emb-name">Memory-Safe DMA with Embassy</div>
+      <div class="emb-desc">In C, DMA corrupts memory when buffers are dropped during transfers. In Rust, <strong>the compiler prevents this.</strong> Use <code>dma_buffers!()</code> macro, wrap in <code>Pin&lt;&'static mut [u16]&gt;</code>. Ownership transfers to the active transaction. Guaranteed destructor cancels hardware DMA if dropped early. Zero corruption by construction.</div>
+    </div>
+    <div class="embedded-item">
+      <div class="emb-icon">🔬</div>
+      <div class="emb-name">Espressif ESP32 Embedded Rust Training</div>
+      <div class="emb-desc">Free training for embedded Rust on ESP32-C3. Both std and no_std editions. <strong>Great if you're using ESP chips for neuromorphic edge nodes</strong> — the ESP32-C6 has RISC-V cores and good networking. github.com/esp-rs/std-training — complete course with exercises.</div>
+    </div>
+    <div class="embedded-item">
+      <div class="emb-icon">🧠</div>
+      <div class="emb-name">Neuromorphic: spiking_neural_networks crate</div>
+      <div class="emb-desc">Native Rust SNN simulation crate. Supports LIF, Hodgkin-Huxley, and Izhikevich models. Trait-based customizations. <strong>Combine with wgpu for GPU-accelerated parallel simulation.</strong> The Leaky Integrate-and-Fire equation runs in WGSL compute shaders — 64-wide workgroups for efficient parallel updates across thousands of simulated neurons.</div>
+    </div>
+    <div class="embedded-item">
+      <div class="emb-icon">📷</div>
+      <div class="emb-name">Event Camera / DVS Processing</div>
+      <div class="emb-desc"><strong>aedat-rs:</strong> Fast AEDAT4 decoder, zero-copy parsing. <strong>evlib:</strong> Processes up to 360M events/second via Polars integration, ~23 bytes/event. <strong>faery:</strong> Sub-millisecond latency for live UDP streaming from DVS cameras. Connect your DVS to ESP32-C6 via SPI DMA, serialize with postcard, stream to host for wgpu simulation.</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 40px;">
+    <div class="section-eye" style="margin-bottom: 16px;"><span>◆</span> Key Crates for Your Stack</div>
+    <div class="crates-wrap">
+      <span class="crate">embassy-executor</span>
+      <span class="crate">embedded-hal</span>
+      <span class="crate">rtic</span>
+      <span class="crate">defmt</span>
+      <span class="crate">probe-rs</span>
+      <span class="crate">postcard</span>
+      <span class="crate">heapless</span>
+      <span class="crate">nb</span>
+      <span class="crate">cortex-m</span>
+      <span class="crate">cortex-m-rt</span>
+      <span class="crate">riscv-rt</span>
+      <span class="crate">smoltcp</span>
+      <span class="crate">nalgebra</span>
+      <span class="crate">fixed</span>
+      <span class="crate">micromath</span>
+      <span class="crate">bitflags</span>
+      <span class="crate">bitvec</span>
+      <span class="crate">zerocopy</span>
+      <span class="crate">bytemuck</span>
+      <span class="crate">wgpu</span>
+      <span class="crate">spiking_neural_networks</span>
+      <span class="crate">aedat-rs</span>
+      <span class="crate">evlib</span>
+      <span class="crate">StaticCell</span>
+      <span class="crate">anyhow</span>
+      <span class="crate">thiserror</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROJECTS -->
+<section class="section" id="projects">
+  <div class="section-eye"><span>◆</span> Ship Real Things</div>
+  <h2 class="section-title">Projects That <em>Get You The Intern</em></h2>
+  <p class="section-sub">Employers look at GitHub. Every project here is real, has employer-visible complexity, and builds your neuromorphic portfolio. Do them in order.</p>
+
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-num">01</div>
+      <div class="project-level proj-beg">Beginner · Weeks 1–4</div>
+      <div class="project-title">CLI Sensor Data Decoder</div>
+      <div class="project-desc">Parse a binary sensor data format from a file. Print decoded readings. <strong>Teaches structs, enums, file I/O, error handling.</strong> Make it read spike events or neuromorphic data formats — immediately domain-relevant. Publish to crates.io.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">02</div>
+      <div class="project-level proj-beg">Beginner · Weeks 3–5</div>
+      <div class="project-title">minigrep Extended</div>
+      <div class="project-desc">Build the book's minigrep project, then extend it. Add: regex support, binary file detection, colored output. <strong>Teaches trait objects, closures, iterators in a real context.</strong> Then build your own tool for something you actually care about.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">03</div>
+      <div class="project-level proj-int">Intermediate · Weeks 7–9</div>
+      <div class="project-title">Blink LED + Read Sensor (Real Hardware)</div>
+      <div class="project-desc">Blink LED on RP2040 in bare Rust, then via Embassy. Read an I2C sensor (temperature, accelerometer). Write to a DAC via SPI. <strong>Your C/C++ background makes this 10x faster to understand than most learners.</strong> Document everything in a README.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">04</div>
+      <div class="project-level proj-int">Intermediate · Weeks 10–14</div>
+      <div class="project-title">RTIC Interrupt-Driven Logger</div>
+      <div class="project-desc">Build a concurrent sensor logger using RTIC. Multiple interrupt-priority tasks. Shared state managed by priority ceiling. <strong>Proves compile-time deadlock elimination.</strong> Log via defmt + RTT. This demonstrates real RTOS-level engineering in Rust.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">05</div>
+      <div class="project-level proj-adv">Advanced · Weeks 14–18</div>
+      <div class="project-title">Memory-Safe SPI DMA Driver</div>
+      <div class="project-desc">Implement a memory-safe SPI DMA transfer using Embassy on ESP32 or RP2040. Static buffers, Pin, ownership transfer to active transaction, guaranteed Drop. <strong>Show this to any embedded firmware engineer and they'll hire you.</strong> Publish as a crate.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">06</div>
+      <div class="project-level proj-adv">Advanced · Weeks 16–20</div>
+      <div class="project-title">wgpu Leaky Integrate-and-Fire Simulator</div>
+      <div class="project-desc">Implement LIF neuron dynamics in WGSL compute shaders. Dispatch 64-wide workgroups. Simulate thousands of neurons in parallel on GPU. <strong>This is the exact architecture for large-scale SNN simulation.</strong> Use bytemuck for zero-copy buffer uploads. Blog post it.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">07</div>
+      <div class="project-level proj-pro">Capstone · Weeks 20–26</div>
+      <div class="project-title">End-to-End Neuromorphic Pipeline</div>
+      <div class="project-desc">Connect DVS event camera → Edge controller (ESP32-C6) via SPI DMA → postcard serialization → UDP stream to host → evlib filtering (360M events/sec) → wgpu compute pipeline for parallel LIF updates → actuator output. <strong>This is your internship portfolio piece.</strong></div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">08</div>
+      <div class="project-level proj-pro">Contribution · Weeks 18+</div>
+      <div class="project-title">Open Source Contribution</div>
+      <div class="project-desc">Contribute a bug fix or feature to Embassy, embedded-hal, or probe-rs. <strong>Even a small PR gets you noticed.</strong> Add your chip's HAL to awesome-embedded-rust. Write a missing example. Fix a documentation issue. Open source contribution is the fastest path to networking with hiring engineers.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">09</div>
+      <div class="project-level proj-pro">Showcase · Week 26</div>
+      <div class="project-title">Spade HDL Hardware Co-Design</div>
+      <div class="project-desc">Use Spade (the Rust-inspired HDL) to implement a hardware pipeline. Type-safe timing verification, first-class pipelines with <code>reg;</code> statements. Compile to Verilog. <strong>Uniquely valuable for neuromorphic ASIC/FPGA work</strong> — almost no candidates know this.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TOOLS -->
+<section class="section" id="tools">
+  <div class="section-eye"><span>◆</span> Your Weapons</div>
+  <h2 class="section-title">Tools That <em>Accelerate</em> Everything</h2>
+  <p class="section-sub">Use these daily from day one. They're not optional. They're how Rust engineers actually work.</p>
+
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-icon">⚡</div>
+      <div class="tool-name">rust-analyzer (VS Code)</div>
+      <div class="tool-desc"><strong>Non-negotiable IDE setup.</strong> Real-time type inference, error underlining, go-to-definition, inline documentation. Makes learning 5x faster because you see types everywhere. Install the VS Code extension. Zero config needed.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🎮</div>
+      <div class="tool-name">play.rust-lang.org</div>
+      <div class="tool-desc">Browser Rust execution. Share snippets, test ideas instantly. Supports stable, beta, nightly. <strong>Copy borrow checker errors and prototype solutions here</strong> before touching your real project. Use it daily.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🔍</div>
+      <div class="tool-name">godbolt.org — Compiler Explorer</div>
+      <div class="tool-desc">See what your Rust compiles to in ARM/RISC-V/x86 assembly. <strong>Set target to thumbv7em-none-eabi</strong> for Cortex-M output. Verify zero-cost abstractions are actually zero cost. Essential for embedded performance work.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">📎</div>
+      <div class="tool-name">cargo clippy</div>
+      <div class="tool-desc">Catches hundreds of common Rust anti-patterns. <strong>Run after every commit. Always.</strong> Finds unneeded clones, inefficient patterns, potential panics. Treat clippy warnings as errors from day one: <code>cargo clippy -- -D warnings</code>.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🔬</div>
+      <div class="tool-name">cargo expand</div>
+      <div class="tool-desc">Expands macros to see what they generate. <strong>Essential for understanding proc macros</strong> that Embassy and RTIC use extensively. Install: <code>cargo install cargo-expand</code>. Run it on any macro-heavy Embassy file to demystify the magic.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🔥</div>
+      <div class="tool-name">cargo-flamegraph</div>
+      <div class="tool-desc">Profiling via flame graphs. Shows where your code spends time. <strong>Essential before any optimization.</strong> Install: <code>cargo install flamegraph</code>. Profile your simulation code to find bottlenecks before reaching for GPU compute.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">📏</div>
+      <div class="tool-name">cargo-bloat / cargo-size</div>
+      <div class="tool-desc">Measure binary size and which functions are taking flash. <strong>Non-negotiable for neuromorphic edge devices.</strong> <code>cargo install cargo-bloat</code>. Run after every dependency addition. Keep your no_std firmware lean.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🧪</div>
+      <div class="tool-name">Miri — Undefined Behavior Detector</div>
+      <div class="tool-desc">Catches undefined behavior in unsafe Rust. <strong>Run before publishing any crate with unsafe blocks.</strong> <code>cargo miri test</code>. Finds use-after-free, invalid memory access, data races in your simulation code. Critical for neuromorphic driver safety.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🔌</div>
+      <div class="tool-name">Wokwi Simulator</div>
+      <div class="tool-desc">Browser-based microcontroller simulator. <strong>Run embedded Rust on simulated ESP32, RP2040 without physical hardware.</strong> Test firmware logic before your board arrives. Simulate sensor inputs. wokwi.com — free and fast.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🛠️</div>
+      <div class="tool-name">probe-rs</div>
+      <div class="tool-desc">Flash firmware, RTT logging, embedded debugging. Replacement for OpenOCD/GDB. <strong>Works with J-Link, CMSIS-DAP, ST-Link.</strong> Install: <code>cargo install probe-rs --features cli</code>. Flash with <code>cargo flash</code>. Log with defmt + RTT. probe.rs</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">📦</div>
+      <div class="tool-name">svd2rust</div>
+      <div class="tool-desc">Generates Rust register definitions from vendor SVD files. <strong>Bridges vendor C headers to type-safe Rust PAC crates.</strong> Every major MCU has SVD files. This is how embedded-hal HAL crates are built. Install: <code>cargo install svd2rust</code>.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">📰</div>
+      <div class="tool-name">This Week in Rust — thisweek.rs</div>
+      <div class="tool-desc">Weekly newsletter. <strong>Subscribe day one.</strong> Best crates, blog posts, job listings, community news. Reading it keeps you current with the ecosystem without doomscrolling. 10 minutes every Thursday. Never miss it.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMMUNITY -->
+<section class="section" id="community">
+  <div class="section-eye"><span>◆</span> The Colony</div>
+  <h2 class="section-title">Community & <em>Forums</em></h2>
+  <p class="section-sub">Rust's community is genuinely one of the best in tech. Zero gatekeeping. High signal. Use it aggressively — especially the embedded Matrix chat for your firmware work.</p>
+
+  <div class="community-grid">
+    <div class="comm-card">
+      <div class="comm-icon">🦀</div>
+      <div class="comm-name">users.rust-lang.org</div>
+      <div class="comm-desc">Official Rust forum. Best signal-to-noise of any programming forum. Post your borrow checker fights here. Genuinely helpful, zero gatekeeping. Search before posting.</div>
+      <a class="comm-link" href="https://users.rust-lang.org" target="_blank">→ users.rust-lang.org</a>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">📡</div>
+      <div class="comm-name">Rust Embedded Matrix</div>
+      <div class="comm-desc">The embedded Rust working group's real-time chat. Ask about specific MCU HALs, driver bugs, linker errors. Active embedded engineers daily. <strong>Your most important community for neuromorphic firmware.</strong></div>
+      <a class="comm-link" href="https://matrix.to/#/#rust-embedded:matrix.org" target="_blank">→ Matrix Chat</a>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">💬</div>
+      <div class="comm-name">r/rust + r/embedded</div>
+      <div class="comm-desc">Reddit. Solid for news, crate releases, career questions. The Rust subreddit is actually good. Weekly "What are you working on?" threads — post your projects there for visibility.</div>
+      <a class="comm-link" href="https://reddit.com/r/rust" target="_blank">→ r/rust</a>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">🔬</div>
+      <div class="comm-name">Rust Zulip</div>
+      <div class="comm-desc">rust-lang.zulipchat.com — Where the Rust compiler team and working groups discuss. Searchable history. Read the t-lang and t-compiler channels to understand how the language evolves.</div>
+      <a class="comm-link" href="https://rust-lang.zulipchat.com" target="_blank">→ Zulip</a>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">📻</div>
+      <div class="comm-name">ESP-RS Matrix (esp-rs)</div>
+      <div class="comm-desc">Silicon-specific development community for ESP32 with Rust. <strong>Join this if you're using ESP32-C6 or similar for your neuromorphic edge nodes.</strong> Espressif engineers answer questions directly.</div>
+      <a class="comm-link" href="https://matrix.to/#/#esp-rs:matrix.org" target="_blank">→ esp-rs Matrix</a>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">🐙</div>
+      <div class="comm-name">rust-embedded GitHub Org</div>
+      <div class="comm-desc">github.com/rust-embedded — The working group repos. Read issues, PRs, embedded-hal RFC discussions. <strong>This is where embedded Rust decisions are made.</strong> Follow the org for notifications.</div>
+      <a class="comm-link" href="https://github.com/rust-embedded" target="_blank">→ GitHub Org</a>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">🎙️</div>
+      <div class="comm-name">Rustacean Station Podcast</div>
+      <div class="comm-desc">Interviews with Rust ecosystem contributors. Companies using Rust in production — low-latency data pipelines, embedded systems, HPC. Proven in the wild. Listen on commutes.</div>
+      <a class="comm-link" href="https://rustacean-station.org" target="_blank">→ rustacean-station.org</a>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">📰</div>
+      <div class="comm-name">This Week in Rust</div>
+      <div class="comm-desc">Weekly newsletter. Best crates, blog posts, job listings. Subscribe day one. Reading it keeps you current without doomscrolling. 10 minutes every Thursday.</div>
+      <a class="comm-link" href="https://this-week-in-rust.org" target="_blank">→ this-week-in-rust.org</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TIPS -->
+<section class="section" id="tips">
+  <div class="section-eye"><span>◆</span> Real Talk</div>
+  <h2 class="section-title">Truths From <em>Masters</em></h2>
+  <p class="section-sub">The mindset stuff. This is the delta between engineers who get good fast and engineers who stay stuck for months fighting the language instead of learning it.</p>
+
+  <div class="tips-grid">
+    <div class="tip-card t1">
+      <div class="tip-head">Fight the borrow checker — don't avoid it</div>
+      <div class="tip-body">Don't reach for <code>Rc/RefCell</code> or <code>clone()</code> to escape ownership errors. Those are escape hatches, not solutions. <strong>When the compiler yells, understand WHY.</strong> That's where the real learning is. Read the error fully. The answer is usually in the error message already.</div>
+    </div>
+    <div class="tip-card t2">
+      <div class="tip-head">Build real projects, not tutorials</div>
+      <div class="tip-body">The book's minigrep is not enough. <strong>Build something you care about.</strong> A spike train analyzer. A sensor fusion library. A HAL for a chip you actually use. The pain of real problems is the fastest learning. Tutorial pain teaches tutorial patterns — real pain teaches engineering.</div>
+    </div>
+    <div class="tip-card t3">
+      <div class="tip-head">Read compiler errors with love</div>
+      <div class="tip-body">Rust's compiler errors are the best in any language. They explain exactly what's wrong and usually suggest a fix. <strong>Read them completely. Never skip to StackOverflow immediately</strong> — the answer is almost always already in the error. This discipline alone will make you faster than 90% of learners.</div>
+    </div>
+    <div class="tip-card t4">
+      <div class="tip-head">Your C/C++ background is an advantage</div>
+      <div class="tip-body">You already know what dangling pointers, data races, and use-after-free look like from experience. <strong>Rust prevents all of these at compile time.</strong> You'll appreciate the safety guarantees more than anyone coming from Python or JavaScript. The borrow checker is your existing discipline, compiler-enforced.</div>
+    </div>
+    <div class="tip-card t5">
+      <div class="tip-head">Test on real hardware early</div>
+      <div class="tip-body">Don't simulate everything. Get a devboard fast — RP2040 costs $4. <strong>Real hardware reveals real problems</strong> that simulators hide: timing, electrical noise, memory alignment, linker issues. Your embedded career needs hardware reps. Start collecting them week 7, not week 20.</div>
+    </div>
+    <div class="tip-card t6">
+      <div class="tip-head">10–15 hours/week, non-negotiable</div>
+      <div class="tip-body">This is the minimum for 4–6 month mastery. <strong>Daily coding beats marathon weekend sessions.</strong> 90 minutes every day > 10 hours on Saturday. Keep a learning log. Track exercises completed, lines written, projects shipped. Make the metrics public or share progress with someone. Accountability accelerates.</div>
+    </div>
+  </div>
+
+  <!-- PITFALLS -->
+  <div style="margin-top: 40px;">
+    <div class="section-eye" style="margin-bottom: 20px;"><span>◆</span> Common Pitfalls — Avoid These</div>
+    <div class="resource-list">
+      <div class="resource-item">
+        <div class="res-num">⚠️</div>
+        <div>
+          <div class="res-name">unwrap() abuse</div>
+          <div class="res-desc">Avoid panics in production code. Use <code>Result</code> propagation with <code>?</code> operator and error libraries like <code>anyhow</code> and <code>thiserror</code>. <strong>Every unwrap() in firmware is a potential unrecoverable crash at 3am on your hardware.</strong></div>
+        </div>
+        <span class="res-when when-start">AVOID</span>
+      </div>
+      <div class="resource-item">
+        <div class="res-num">⚠️</div>
+        <div>
+          <div class="res-name">Thinking in C++ patterns</div>
+          <div class="res-desc">Don't try to "force" patterns from other languages. <strong>Embrace iterators, algebraic data types, trait objects.</strong> Otherwise you'll write Rust code that looks like C++ with different syntax — and miss 80% of what makes Rust powerful.</div>
+        </div>
+        <span class="res-when when-start">AVOID</span>
+      </div>
+      <div class="resource-item">
+        <div class="res-num">⚠️</div>
+        <div>
+          <div class="res-name">Forgetting #![no_std] rules</div>
+          <div class="res-desc">In embedded, no heap allocation, no standard library. Dynamic allocation (<code>Vec</code>, <code>String</code>) won't work. <strong>Use <code>heapless</code> crate for fixed-size collections.</strong> Design data structures knowing your RAM budget upfront. Check binary size with cargo-bloat constantly.</div>
+        </div>
+        <span class="res-when when-start">AVOID</span>
+      </div>
+      <div class="resource-item">
+        <div class="res-num">⚠️</div>
+        <div>
+          <div class="res-name">Skipping cargo clippy</div>
+          <div class="res-desc">Clippy catches patterns that are correct but suboptimal. <strong>Run it every commit. Treat warnings as errors.</strong> It teaches you idiomatic Rust automatically by flagging the unidiomatic version of your code. It's a free Rust tutor built into the toolchain.</div>
+        </div>
+        <span class="res-when when-start">AVOID</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-crab">🦀</div>
+  <div class="footer-tagline">"The borrow checker is teaching you. Let it."</div>
+  <div class="footer-seq">
+    <span>rustup install</span> → The Book + Rustlings → Let's Get Rusty → Programming Rust → <span>blink LED</span> → Embassy → RTIC → <span>Rust for Rustaceans</span> → Atomics → wgpu → <span>ship neuromorphic firmware</span> → intern 🚀
+  </div>
+  <div style="margin-top: 24px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);">
+    Built for the crab in orbit · Rust Zero → Orbit · 2026
+  </div>
+</footer>
+
+</body>
+</html>
